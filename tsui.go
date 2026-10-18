@@ -77,6 +77,9 @@ type model struct {
 	// is updated and used to keep track of status expiration messages.
 	statusGen int
 
+	// Whether the help screen is open.
+	showHelp bool
+
 	// Result of the update checker.
 	latestVersion string
 

@@ -204,7 +204,7 @@ func renderStatusBar(m *model) string {
 
 	right := lipgloss.NewStyle().
 		Faint(true).
-		Render("press q to quit")
+		Render("? help · q quit")
 
 	left := lipgloss.NewStyle().
 		Width(m.terminalWidth - lipgloss.Width(right)).
@@ -235,6 +235,11 @@ func (m model) View() string {
 	// Now, draw the middle, and make it take up the remaining space.
 	middleHeight := m.terminalHeight - lipgloss.Height(top) - lipgloss.Height(bottom)
 	var middle string
+
+	if m.showHelp {
+		middle = renderHelp(m.terminalWidth, middleHeight)
+		return top + "\n" + middle + "\n" + bottom
+	}
 
 	styledAuthUrl := lipgloss.NewStyle().
 		Underline(true).

@@ -117,6 +117,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case tea.KeyMsg:
+		if msg.String() == "?" {
+			m.showHelp = !m.showHelp
+			return m, nil
+		}
+		if m.showHelp {
+			// While the help screen is open, esc closes it and the menus ignore all other keys.
+			switch msg.String() {
+			case "esc":
+				m.showHelp = false
+			case "ctrl+c", "q":
+				return m, tea.Quit
+			}
+			return m, nil
+		}
+
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
