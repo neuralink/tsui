@@ -248,8 +248,29 @@ func (m model) View() string {
 			Render(m.menu.Render(middleHeight, m.terminalWidth))
 
 	case ipn.NeedsMachineAuth:
-		// TODO: Figure out what this state actually is so we can be helpful to the user.
-		middle = renderMiddleBanner(&m, middleHeight, "Tailscale status is NeedsMachineAuth.")
+		// The tailnet has device approval enabled and this device hasn't been approved yet.
+		// Tailscale moves on by itself once it is, and our poller picks that up.
+		adminURL := "https://login.tailscale.com/admin"
+		if m.state.Prefs != nil {
+			adminURL = m.state.Prefs.AdminPageURL()
+		}
+		styledAdminURL := lipgloss.NewStyle().
+			Underline(true).
+			Foreground(ui.Blue).
+			Render(adminURL + "/machines")
+
+		middle = renderMiddleBanner(&m, middleHeight, strings.Join([]string{
+			lipgloss.NewStyle().
+				Bold(true).
+				Render(`Device Approval Required`),
+			``,
+			`This tailnet requires new devices to be approved by an admin.`,
+			`An admin can approve this device under Machines in the admin console:`,
+			``,
+			styledAdminURL,
+			``,
+			`tsui will continue automatically once the device is approved.`,
+		}, "\n"))
 
 	case ipn.NeedsLogin:
 		lines := []string{
