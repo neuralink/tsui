@@ -131,7 +131,11 @@ func buildMachineDetailsSubmenu(peer *ipnstate.PeerStatus) *ui.Submenu {
 		addInfoItem("Created", peer.Created.Format(time.RFC822))
 	}
 	if peer.KeyExpiry != nil {
-		addInfoItem("Key Expiry", ui.FormatDuration(time.Until(*peer.KeyExpiry)))
+		keyExpiry := "Expired"
+		if duration := time.Until(*peer.KeyExpiry); duration > 0 {
+			keyExpiry = ui.FormatDuration(duration)
+		}
+		addInfoItem("Key Expiry", keyExpiry)
 	}
 	if peer.ExitNodeOption {
 		addInfoItem("Exit Node", "Yes")
