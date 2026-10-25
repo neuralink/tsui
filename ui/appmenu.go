@@ -81,8 +81,10 @@ func (appmenu *Appmenu) Render(height int, width int) string {
 		s.WriteString(item.render(i == appmenu.cursor, appmenu.isOpen))
 	}
 
+	// An open submenu shows the selected item's child submenu next to it even before
+	// it's focused, so hide the appmenu if all three columns don't fit.
 	submenu := &appmenu.items[appmenu.cursor].Submenu
-	if appmenu.isOpen && submenu.HasOpenChildSubmenu() && width < appmenuItemWidth+minSubmenuItemWidth*2 {
+	if appmenu.isOpen && submenu.selectedChildSubmenu() != nil && width < appmenuItemWidth+minSubmenuItemWidth*2 {
 		return submenu.Render(appmenu.isOpen, height, width)
 	}
 
